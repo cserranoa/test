@@ -1,4 +1,4 @@
-name: Mi Primer Workflow
+name: Terraform CI
 
 on:
   push:
@@ -7,15 +7,33 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  terraform:
+    name: Terraform Pipeline
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Obtener el código fuente de la rama master
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Ejecutar comando de prueba
-        run: |
-          echo "¡Hola desde GitHub Actions en la rama master!"
-          pwd
-          ls -la
+      # 2. Configurar la herramienta de Terraform en el runner
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.0"
+
+      # 3. Comprobar que el código cumpla con el formato estándar
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      # 4. Inicializar Terraform (descarga providers/plugins)
+      - name: Terraform Init
+        run: terraform init
+
+      # 5. Validar la sintaxis y coherencia de los archivos .tf
+      - name: Terraform Validate
+        run: terraform validate
+
+      # 6. Generar el plan de ejecución de infraestructura
+      - name: Terraform Plan
+        run: terraform plan
