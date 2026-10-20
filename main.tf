@@ -1,15 +1,8 @@
-terraform {
-  required_version = ">= 1.0.0"
-  required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.2.0"
-    }
-  }
+variable "mensaje" {
+  type    = string
+  default = "¡Hola desde Terraform en GitHub Actions!"
 }
 
-resource "null_resource" "ejemplo" {
-  triggers = {
-    always_run = timestamp()
-  }
+output "resultado" {
+  value = "El pipeline se ejecutó correctamente con el mensaje: ${var.mensaje}"
 }
